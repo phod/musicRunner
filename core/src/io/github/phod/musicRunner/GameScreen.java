@@ -11,12 +11,20 @@ public class GameScreen implements Screen {
     private PlayerBlock playerBlock;
     private final int startX = 40;
     private final int startY = 40;
+    private final int blockY = 0;
     private Batch batch;
+    private MusicBlock[] groundBlocks;
 
     public GameScreen(final MusicRunner game) {
         this.game = game;
         this.batch = game.getBatch();
         playerBlock = new PlayerBlock(startX, startY);
+        groundBlocks = new MusicBlock[800/64 + 1];
+        int count = 0;
+        for (int i = 0; i < 800; i += 64){
+            groundBlocks[count] = new MusicBlock(i, blockY);
+            count++;
+        }
     }
 
     @Override
@@ -31,6 +39,9 @@ public class GameScreen implements Screen {
 
         batch.begin();
         playerBlock.draw(batch);
+        for(MusicBlock mB: groundBlocks) {
+            mB.draw(batch);
+        }
         batch.end();
     }
 
