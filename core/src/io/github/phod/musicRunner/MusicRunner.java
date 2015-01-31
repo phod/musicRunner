@@ -19,10 +19,7 @@ public class MusicRunner extends Game {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.end();
+		super.render();
 	}
 
 	public void dispose() {

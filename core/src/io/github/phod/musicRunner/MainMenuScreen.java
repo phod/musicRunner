@@ -1,18 +1,19 @@
 package io.github.phod.musicRunner;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class MainMenuScreen implements Screen {
 
-    final MusicRunner game;
+    private final MusicRunner game;
 
     OrthographicCamera camera;
 
-    public MainMenuScreen(final MusicRunner gam) {
-        game = gam;
+    public MainMenuScreen(final MusicRunner game) {
+        this.game = game;
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
@@ -33,11 +34,11 @@ public class MainMenuScreen implements Screen {
         game.getBatch().setProjectionMatrix(camera.combined);
 
         game.getBatch().begin();
-        game.getFont().draw(game.getBatch(), "Welcome to Drop!!! ", 100, 150);
-        game.getFont().draw(game.getBatch(), "Tap anywhere to begin!", 100, 100);
+        game.getFont().draw(game.getBatch(), "Music Runner", 350, 400);
+        game.getFont().draw(game.getBatch(), "Press ENTER to begin!", 320, 250);
         game.getBatch().end();
 
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
             game.setScreen(new GameScreen(game));
             dispose();
         }
