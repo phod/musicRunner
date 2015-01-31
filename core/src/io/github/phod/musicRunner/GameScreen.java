@@ -9,8 +9,8 @@ public class GameScreen implements Screen {
 
     private final MusicRunner game;
     private PlayerBlock playerBlock;
-    private final int startX = 40;
-    private final int startY = 40;
+    private final int startX = 64;
+    private final int startY = 64;
     private final int blockY = 0;
     private Batch batch;
     private MusicBlock[] groundBlocks;
