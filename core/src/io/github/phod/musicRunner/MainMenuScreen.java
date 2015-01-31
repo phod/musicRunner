@@ -5,15 +5,18 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class MainMenuScreen implements Screen {
 
     private final MusicRunner game;
+    private Batch batch;
 
     OrthographicCamera camera;
 
     public MainMenuScreen(final MusicRunner game) {
         this.game = game;
+        this.batch = game.getBatch();
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
@@ -31,12 +34,12 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-        game.getBatch().setProjectionMatrix(camera.combined);
+        batch.setProjectionMatrix(camera.combined);
 
-        game.getBatch().begin();
-        game.getFont().draw(game.getBatch(), "Music Runner", 350, 400);
-        game.getFont().draw(game.getBatch(), "Press ENTER to begin!", 320, 250);
-        game.getBatch().end();
+        batch.begin();
+        game.getFont().draw(batch, "Music Runner", 350, 400);
+        game.getFont().draw(batch, "Press ENTER to begin!", 320, 250);
+        batch.end();
 
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
             game.setScreen(new GameScreen(game));
