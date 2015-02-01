@@ -102,7 +102,6 @@ public class GameScreen implements Screen {
         int moveSpeed = random.nextInt(210) + 100 + enemiesSpawned*ENEMY_SPEED_MULT;
         enemyBlocks.add(new EnemyBlock(ENEMY_X_SPAWN, yPos, moveSpeed,
                 ENEMY_MAX_HEIGHT, ENEMY_MIN_HEIGHT));
-        System.out.println("ENEMY SPAWNED!!!");
     }
 
     @Override
@@ -133,11 +132,14 @@ public class GameScreen implements Screen {
             mB.moveXPos(Math.round(playerBlock.getSpeed() * Gdx.graphics.getDeltaTime()));
         }
 
-        //Check if enemies off the screen and move enemies along to the left.
+        //Check for enemy/player collision
+        //Else check if enemies off the screen and move enemies along to the left.
         for (int i = 0; i < enemyBlocks.size; i++) {
-            if (enemyBlocks.get(i).getXPos() < -64) {
+            if (enemyBlocks.get(i).getEnemyCol().overlaps(this.playerCol)) {
+                game.setScreen(new MainMenuScreen(game));
+                dispose();
+            } else if (enemyBlocks.get(i).getXPos() < -64) {
                 enemyBlocks.removeIndex(i);
-                System.out.println("DESPAWN");
                 i--;
             } else {
                 enemyBlocks.get(i).moveXPos(Math.round(playerBlock.getSpeed() *

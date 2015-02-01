@@ -50,6 +50,7 @@ public class EnemyBlock {
             yPos = MIN_HEIGHT;
             direction *= -1;
         }
+        enemyCol.y = this.yPos;
     }
 
     public void moveXPos(int xPos) {
