@@ -6,6 +6,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
+
+import java.util.Random;
 
 
 public class GameScreen implements Screen {
@@ -16,14 +20,27 @@ public class GameScreen implements Screen {
     private final int startY = 64;
     private final int blockY = 0;
     private Batch batch;
+    private Random random;
+
     private MusicBlock[] groundBlocks;
     private Rectangle playerCol;
     private int frontBlock; //MusicBlock in groundBlocks closest to x=-64
     private int endBlock; //MusicBlock in groundBlocks furthest from x=-64
+
     private final int MAX_SPEED = 400;
     private final int MIN_SPEED = 100;
     private final int SPEED_CHANGE = 15;
     private int currPlayerSpeed;
+
+    private Array<EnemyBlock> enemyBlocks;
+    private long lastSpawnTime;
+    private long nextSpawnTime;
+    private final int ENEMY_X_SPAWN = 764;
+    private final int ENEMY_MAX_HEIGHT = 480 - 64;
+    private final int ENEMY_MIN_HEIGHT = 64;
+    private int enemiesSpawned;
+    private final int ENEMY_SPEED_MULT = 10;
+    private final int MAX_ENEMY_MULT = 40;
 
     public GameScreen(final MusicRunner game) {
         this.game = game;
@@ -39,6 +56,16 @@ public class GameScreen implements Screen {
         frontBlock = 0;
         endBlock = groundBlocks.length - 1;
         currPlayerSpeed = playerBlock.getSpeed();
+
+        random = new Random();
+        enemyBlocks = new Array<EnemyBlock>();
+        lastSpawnTime = TimeUtils.nanoTime();
+        nextSpawnTime = calcEnemySpawn();
+        enemiesSpawned = 0;
+    }
+
+    public long calcEnemySpawn() {
+        return lastSpawnTime + (random.nextInt(5) + 1) * 1000000000l;
     }
 
     @Override
@@ -66,6 +93,18 @@ public class GameScreen implements Screen {
         }
     }
 
+    public void spawnEnemy() {
+        if (enemiesSpawned < MAX_ENEMY_MULT) {
+            enemiesSpawned++;
+        }
+        int yPos = random.nextInt(ENEMY_MAX_HEIGHT - ENEMY_MIN_HEIGHT)
+                + ENEMY_MIN_HEIGHT; //Spawn enemy between min and max height
+        int moveSpeed = random.nextInt(210) + 100 + enemiesSpawned*ENEMY_SPEED_MULT;
+        enemyBlocks.add(new EnemyBlock(ENEMY_X_SPAWN, yPos, moveSpeed,
+                ENEMY_MAX_HEIGHT, ENEMY_MIN_HEIGHT));
+        System.out.println("ENEMY SPAWNED!!!");
+    }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(255, 255, 255, 1);
@@ -75,6 +114,9 @@ public class GameScreen implements Screen {
         playerBlock.draw(batch);
         for(MusicBlock mB: groundBlocks) {
             mB.draw(batch);
+        }
+        for(EnemyBlock enemy: enemyBlocks) {
+            enemy.draw(batch);
         }
         batch.end();
 
@@ -91,6 +133,18 @@ public class GameScreen implements Screen {
             mB.moveXPos(Math.round(playerBlock.getSpeed() * Gdx.graphics.getDeltaTime()));
         }
 
+        //Check if enemies off the screen and move enemies along to the left.
+        for (int i = 0; i < enemyBlocks.size; i++) {
+            if (enemyBlocks.get(i).getXPos() < -64) {
+                enemyBlocks.removeIndex(i);
+                System.out.println("DESPAWN");
+                i--;
+            } else {
+                enemyBlocks.get(i).moveXPos(Math.round(playerBlock.getSpeed() *
+                        Gdx.graphics.getDeltaTime()));
+            }
+        }
+
         //Check if block is off the screen, if so move to other end of screen
         if (groundBlocks[frontBlock].getXPos() < -64) {
             groundBlocks[frontBlock].setXPos(
@@ -100,6 +154,16 @@ public class GameScreen implements Screen {
         }
 
         getInput();
+
+        if(TimeUtils.nanoTime() > nextSpawnTime) {
+            spawnEnemy();
+            lastSpawnTime = nextSpawnTime;
+            nextSpawnTime = calcEnemySpawn();
+        }
+
+        for(EnemyBlock enemy: enemyBlocks) {
+            enemy.changeHeight(Gdx.graphics.getDeltaTime());
+        }
 
     }
 
