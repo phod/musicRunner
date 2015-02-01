@@ -52,4 +52,8 @@ public class MusicBlock {
         return blockCol;
     }
 
+    public void moveXPos(int xPos) {
+        this.xPos -= xPos;
+        blockCol.x = this.xPos;
+    }
 }

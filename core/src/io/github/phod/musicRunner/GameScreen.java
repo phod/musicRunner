@@ -48,11 +48,17 @@ public class GameScreen implements Screen {
         }
         batch.end();
 
+        //Check if the player is on top of a block and play a note, if so.
         for(MusicBlock mB: groundBlocks) {
             Rectangle currCol = mB.getBlockCol();
             if (currCol.overlaps(this.playerCol)) {
                 mB.playNote();
             }
+        }
+
+        //Move all the blocks along to the left.
+        for(MusicBlock mB: groundBlocks) {
+            mB.moveXPos(Math.round(200 * Gdx.graphics.getDeltaTime()));
         }
     }
 
