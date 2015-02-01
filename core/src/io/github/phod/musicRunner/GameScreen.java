@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Rectangle;
+
 
 public class GameScreen implements Screen {
 
@@ -14,11 +16,13 @@ public class GameScreen implements Screen {
     private final int blockY = 0;
     private Batch batch;
     private MusicBlock[] groundBlocks;
+    private Rectangle playerCol;
 
     public GameScreen(final MusicRunner game) {
         this.game = game;
-        this.batch = game.getBatch();
+        this.batch = this.game.getBatch();
         playerBlock = new PlayerBlock(startX, startY);
+        playerCol = playerBlock.getPlayerCol();
         groundBlocks = new MusicBlock[800/64 + 1];
         int count = 0;
         for (int i = 0; i < 800; i += 64){
@@ -43,6 +47,13 @@ public class GameScreen implements Screen {
             mB.draw(batch);
         }
         batch.end();
+
+        for(MusicBlock mB: groundBlocks) {
+            Rectangle currCol = mB.getBlockCol();
+            if (currCol.overlaps(this.playerCol)) {
+                mB.playNote();
+            }
+        }
     }
 
     @Override

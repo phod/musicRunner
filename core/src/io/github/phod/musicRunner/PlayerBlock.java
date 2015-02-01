@@ -30,4 +30,8 @@ public class PlayerBlock {
         batch.draw(playerImage, xPos, yPos);
     }
 
+    public Rectangle getPlayerCol() {
+        return playerCol;
+    }
+
 }
