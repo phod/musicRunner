@@ -5,10 +5,9 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
+import java.util.Random;
 
-/**
- * Created by phil on 1/02/15.
- */
+
 public class MusicBlock {
 
     private int xPos;
@@ -26,7 +25,11 @@ public class MusicBlock {
     public MusicBlock(int xPos, int yPos) {
         this.xPos = xPos;
         this.yPos = yPos;
-        blockImage = new Texture(Gdx.files.internal("ground1.png"));
+        Random random = new Random();
+        int groundNo = random.nextInt(3) + 1;
+        String groundName = "ground" + groundNo + ".png";
+
+        blockImage = new Texture(Gdx.files.internal(groundName));
         blockCol = new Rectangle();
         blockCol.x = this.xPos;
         blockCol.y = this.yPos+64; //collider is ABOVE the ground to
