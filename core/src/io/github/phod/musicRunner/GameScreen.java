@@ -17,18 +17,22 @@ public class GameScreen implements Screen {
     private Batch batch;
     private MusicBlock[] groundBlocks;
     private Rectangle playerCol;
+    private int frontBlock; //MusicBlock in groundBlocks closest to x=-64
+    private int endBlock; //MusicBlock in groundBlocks furthest from x=-64
 
     public GameScreen(final MusicRunner game) {
         this.game = game;
         this.batch = this.game.getBatch();
         playerBlock = new PlayerBlock(startX, startY);
         playerCol = playerBlock.getPlayerCol();
-        groundBlocks = new MusicBlock[800/64 + 1];
+        groundBlocks = new MusicBlock[864/64 + 1];
         int count = 0;
-        for (int i = 0; i < 800; i += 64){
+        for (int i = 0; i < 864; i += 64){
             groundBlocks[count] = new MusicBlock(i, blockY);
             count++;
         }
+        frontBlock = 0;
+        endBlock = groundBlocks.length - 1;
     }
 
     @Override
@@ -60,6 +64,15 @@ public class GameScreen implements Screen {
         for(MusicBlock mB: groundBlocks) {
             mB.moveXPos(Math.round(200 * Gdx.graphics.getDeltaTime()));
         }
+
+        //Check if block is off the screen, if so move to other end of screen
+        if (groundBlocks[frontBlock].getXPos() < -64) {
+            groundBlocks[frontBlock].setXPos(
+                    groundBlocks[endBlock].getXPos() + 64, true);
+            frontBlock = (frontBlock + 1) % groundBlocks.length;
+            endBlock = (endBlock + 1) % groundBlocks.length;
+        }
+
     }
 
     @Override

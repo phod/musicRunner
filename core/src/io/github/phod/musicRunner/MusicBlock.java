@@ -52,8 +52,20 @@ public class MusicBlock {
         return blockCol;
     }
 
+    public void setXPos(int xPos, boolean reset) {
+        this.xPos = xPos;
+        blockCol.x = xPos;
+        if (reset) {
+            notePlayed = false;
+        }
+    }
+
     public void moveXPos(int xPos) {
         this.xPos -= xPos;
         blockCol.x = this.xPos;
+    }
+
+    public int getXPos() {
+        return this.xPos;
     }
 }
