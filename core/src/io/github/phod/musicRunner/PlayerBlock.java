@@ -14,6 +14,7 @@ public class PlayerBlock {
     private int yPos;
     private Texture playerImage;
     private Rectangle playerCol;
+    private int speed;
 
     public PlayerBlock(int xPos, int yPos) {
         this.xPos = xPos;
@@ -24,6 +25,7 @@ public class PlayerBlock {
         playerCol.y = this.yPos;
         playerCol.width = 64;
         playerCol.height = 64;
+        this.speed = 200;
     }
 
     public void draw(Batch batch) {
@@ -32,6 +34,14 @@ public class PlayerBlock {
 
     public Rectangle getPlayerCol() {
         return playerCol;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public int getSpeed() {
+        return this.speed;
     }
 
 }

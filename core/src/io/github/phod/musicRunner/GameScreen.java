@@ -1,6 +1,7 @@
 package io.github.phod.musicRunner;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -19,6 +20,10 @@ public class GameScreen implements Screen {
     private Rectangle playerCol;
     private int frontBlock; //MusicBlock in groundBlocks closest to x=-64
     private int endBlock; //MusicBlock in groundBlocks furthest from x=-64
+    private final int MAX_SPEED = 400;
+    private final int MIN_SPEED = 100;
+    private final int SPEED_CHANGE = 15;
+    private int currPlayerSpeed;
 
     public GameScreen(final MusicRunner game) {
         this.game = game;
@@ -33,11 +38,32 @@ public class GameScreen implements Screen {
         }
         frontBlock = 0;
         endBlock = groundBlocks.length - 1;
+        currPlayerSpeed = playerBlock.getSpeed();
     }
 
     @Override
     public void show() {
 
+    }
+
+    public void getInput() {
+        currPlayerSpeed = playerBlock.getSpeed();
+        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            if (currPlayerSpeed < MAX_SPEED) {
+                playerBlock.setSpeed((currPlayerSpeed + SPEED_CHANGE));
+            }
+            if (currPlayerSpeed > MAX_SPEED) {
+                playerBlock.setSpeed((MAX_SPEED));
+            }
+
+        } else if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            if (currPlayerSpeed > MIN_SPEED) {
+                playerBlock.setSpeed((currPlayerSpeed - SPEED_CHANGE));
+            }
+            if (currPlayerSpeed < MIN_SPEED) {
+                playerBlock.setSpeed((MIN_SPEED));
+            }
+        }
     }
 
     @Override
@@ -62,7 +88,7 @@ public class GameScreen implements Screen {
 
         //Move all the blocks along to the left.
         for(MusicBlock mB: groundBlocks) {
-            mB.moveXPos(Math.round(200 * Gdx.graphics.getDeltaTime()));
+            mB.moveXPos(Math.round(playerBlock.getSpeed() * Gdx.graphics.getDeltaTime()));
         }
 
         //Check if block is off the screen, if so move to other end of screen
@@ -72,6 +98,8 @@ public class GameScreen implements Screen {
             frontBlock = (frontBlock + 1) % groundBlocks.length;
             endBlock = (endBlock + 1) % groundBlocks.length;
         }
+
+        getInput();
 
     }
 
